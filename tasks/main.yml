@@ -1,0 +1,47 @@
+---
+- name: Assert that vars are defined
+  assert:
+    that:
+      - gitlab_container_hostname is defined
+
+- name: Install pip docker
+  pip:
+    name: docker
+
+- name: Create the Gitlab dirs
+  file:
+    state: directory
+    path: '{{ gitlab_dir }}/{{ item }}'
+    recurse: true
+  loop:
+    - config
+    - logs
+    - data
+
+- name: Copy gitlab.rb
+  notify: reconfigure_gitlab
+  copy:
+    content: '{{ gitlab_rb }}'
+    dest: '{{ gitlab_dir }}/config/gitlab.rb'
+
+- name: Pull the docker image
+  docker_image:
+    source: pull
+    name: '{{ gitlab_image }}'
+    force: true
+
+- name: Start the docker container
+  notify: health_check_gitlab
+  docker_container:
+    comparisons:
+      '*': strict
+    image: '{{ gitlab_image }}'
+    name: '{{ gitlab_container_name }}'
+    restart_policy: unless-stopped
+    networks: '{{ gitlab_docker_networks }}'
+    ports: '{{ gitlab_container_ports }}'
+    hostname: '{{ gitlab_container_hostname }}'
+    volumes:
+      - '{{ gitlab_dir }}/config:/etc/gitlab'
+      - '{{ gitlab_dir }}/logs:/var/log/gitlab'
+      - '{{ gitlab_dir }}/data:/var/opt/gitlab'

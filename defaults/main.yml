@@ -1,0 +1,10 @@
+---
+gitlab_dir: /opt/gitlab
+gitlab_image: gitlab/gitlab-ce:latest
+gitlab_container_name: gitlab
+gitlab_docker_networks: []
+gitlab_rb: '{{ lookup("template", "gitlab.rb") }}'
+gitlab_shell_ssh_port: 22222
+gitlab_memory: '{{ ansible_memory_mb.real.total * 0.2 }}m'
+gitlab_container_ports:
+  - '{{ gitlab_shell_ssh_port }}:22'

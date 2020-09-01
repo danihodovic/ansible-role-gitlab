@@ -1,0 +1,16 @@
+---
+- name: Destroy
+  hosts: localhost
+  vars:
+    ansible_connection: local
+  tasks:
+    - name: Remove the container
+      docker_container:
+        name: 'gitlab'
+        state: absent
+
+    - name: Delete the dirs
+      become: true
+      file:
+        state: absent
+        path: '{{ gitlab_dir }}'

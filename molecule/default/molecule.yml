@@ -1,0 +1,33 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: delegated
+  options:
+    managed: true
+    ansible_connection_options:
+      ansible_connection: local
+platforms:
+  - name: localhost
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: "${MOLECULE_PYTHON:-../../.venv/bin/python}"
+      stdout_callback: yaml
+  inventory:
+    group_vars:
+      all:
+        ansible_connection: local
+        ansible_become: true
+        gitlab_dir: /tmp/gitlab
+        gitlab_container_hostname: gitlab.xyz
+        gitlab_docker_networks:
+          - name: test_gitlab
+  playbooks:
+    converge: converge.yml
+    destroy: destroy.yml
+
+verifier:
+  name: testinfra
+  directory: ../../tests

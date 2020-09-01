@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: localhost
+  tasks:
+    - name: Create network
+      docker_network:
+        name: test_gitlab
+
+    - name: Deploy Gitlab
+      include_role:
+        name: ansible-role-gitlab

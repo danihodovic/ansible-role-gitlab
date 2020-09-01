@@ -1,0 +1,47 @@
+---
+- name: Deploy
+  hosts: all
+  tasks:
+    # - name: Install python pip
+    #   apt:
+    #     name: python3-pip
+    #     update_cache: true
+    #
+    # - name: Install docker
+    #   import_role:
+    #     name: geerlingguy.docker
+
+    # - name: Create docker network
+    #   docker_network:
+    #     name: gitlab
+    #
+    - name: Deploy Gitlab
+      import_role:
+        name: ansible-role-gitlab
+      vars:
+        gitlab_container_hostname: gitlab.ipdop.com
+        gitlab_docker_networks: [{name: gitlab}]
+
+    - name: Deploy separate nginx
+      import_role:
+        name: ansible-role-openresty
+      vars:
+        openresty_includes_extras:
+          gitlab.conf: |
+            server {
+              server_name gitlab.ipdop.com;
+              listen 443 ssl http2;
+
+              {{ openresty_auto_ssl_config|indent(2) }}
+              location / {
+                set $upstream gitlab:80;
+                proxy_pass http://$upstream;
+              }
+            }
+        openresty_ssl_domains:
+          - gitlab.ipdop.com
+        openresty_includes_builtin:
+          - proxy.conf
+          - ssl.conf
+          - logging.conf
+        openresty_docker_networks: [{name: gitlab}]
