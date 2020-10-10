@@ -19,7 +19,6 @@
     - data
 
 - name: Copy gitlab.rb
-  notify: reconfigure_gitlab
   copy:
     content: '{{ gitlab_rb }}'
     dest: '{{ gitlab_dir }}/config/gitlab.rb'

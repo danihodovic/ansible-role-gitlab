@@ -1,15 +1,10 @@
 ---
-- name: Restart Gitlab
-  shell: 'docker restart gitlab'
-  listen: reconfigure_gitlab
-  notify: health_check_gitlab
-
 - name: Health check Gitlab
   listen: health_check_gitlab
   register: health_check_result
   shell: >-
     docker exec {{ gitlab_container_name }}
     bash -c 'curl --fail localhost/-/readiness?all=1'
-  retries: 120
+  retries: 180
   delay: 1
   until: health_check_result.rc == 0
