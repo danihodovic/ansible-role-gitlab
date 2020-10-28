@@ -30,7 +30,6 @@
     force: true
 
 - name: Start the docker container
-  notify: health_check_gitlab
   docker_container:
     comparisons:
       '*': strict
@@ -44,3 +43,12 @@
       - '{{ gitlab_dir }}/config:/etc/gitlab'
       - '{{ gitlab_dir }}/logs:/var/log/gitlab'
       - '{{ gitlab_dir }}/data:/var/opt/gitlab'
+
+- name: Wait for Gitlab to start
+  register: health_check_result
+  shell: >-
+    docker exec {{ gitlab_container_name }}
+    bash -c 'curl --fail localhost/-/readiness?all=1'
+  retries: 180
+  delay: 1
+  until: health_check_result.rc == 0
