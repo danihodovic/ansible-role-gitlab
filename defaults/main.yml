@@ -1,6 +1,6 @@
 ---
 gitlab_dir: /opt/gitlab
-gitlab_image: gitlab/gitlab-ce:latest
+gitlab_image: gitlab/gitlab-ce:13.2.10-ce.0
 gitlab_container_name: gitlab
 gitlab_docker_networks: []
 gitlab_rb: '{{ lookup("template", "gitlab.rb") }}'
