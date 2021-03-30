@@ -8,3 +8,17 @@ gitlab_shell_ssh_port: 22222
 gitlab_memory: '{{ ansible_memory_mb.real.total * 0.2 }}m'
 gitlab_container_ports:
   - '{{ gitlab_shell_ssh_port }}:22'
+gitlab_container: {}
+gitlab_container_defaults:
+  comparisons:
+    '*': strict
+  image: '{{ gitlab_image }}'
+  name: '{{ gitlab_container_name }}'
+  restart_policy: unless-stopped
+  networks: '{{ gitlab_docker_networks }}'
+  ports: '{{ gitlab_container_ports }}'
+  hostname: '{{ gitlab_container_hostname }}'
+  volumes:
+    - '{{ gitlab_dir }}/config:/etc/gitlab'
+    - '{{ gitlab_dir }}/logs:/var/log/gitlab'
+    - '{{ gitlab_dir }}/data:/var/opt/gitlab'

@@ -23,26 +23,17 @@
     content: '{{ gitlab_rb }}'
     dest: '{{ gitlab_dir }}/config/gitlab.rb'
 
+- set_fact:
+    gitlab_container: '{{ gitlab_container_defaults | combine(gitlab_container)}}'
+
 - name: Pull the docker image
   docker_image:
     source: pull
-    name: '{{ gitlab_image }}'
+    name: '{{ gitlab_container.image }}'
     force: true
 
 - name: Start the docker container
-  docker_container:
-    comparisons:
-      '*': strict
-    image: '{{ gitlab_image }}'
-    name: '{{ gitlab_container_name }}'
-    restart_policy: unless-stopped
-    networks: '{{ gitlab_docker_networks }}'
-    ports: '{{ gitlab_container_ports }}'
-    hostname: '{{ gitlab_container_hostname }}'
-    volumes:
-      - '{{ gitlab_dir }}/config:/etc/gitlab'
-      - '{{ gitlab_dir }}/logs:/var/log/gitlab'
-      - '{{ gitlab_dir }}/data:/var/opt/gitlab'
+  docker_container: '{{ gitlab_container }}'
 
 - name: Wait for Gitlab to start
   register: health_check_result
