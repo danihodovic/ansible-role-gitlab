@@ -1,3 +1,5 @@
+# ansible-role-gitlab[![Build Status](https://ci.depode.com/api/badges/danihodovic/ansible-role-gitlab/status.svg)](https://ci.depode.com/danihodovic/ansible-role-gitlab)
+
 ### Test deployment
 
 ```
