@@ -1,22 +1,16 @@
 ---
 gitlab_dir: /opt/gitlab
-gitlab_image: gitlab/gitlab-ce:13.2.10-ce.0
-gitlab_container_name: gitlab
-gitlab_docker_networks: []
 gitlab_rb: '{{ lookup("template", "gitlab.rb") }}'
 gitlab_shell_ssh_port: 22222
 gitlab_memory: '{{ ansible_memory_mb.real.total * 0.2 }}m'
-gitlab_container_ports:
-  - '{{ gitlab_shell_ssh_port }}:22'
 gitlab_container: {}
 gitlab_container_defaults:
   comparisons:
     '*': strict
-  image: '{{ gitlab_image }}'
-  name: '{{ gitlab_container_name }}'
+  image: gitlab/gitlab-ce:13.2.10-ce.0
+  name: gitlab
   restart_policy: unless-stopped
-  networks: '{{ gitlab_docker_networks }}'
-  ports: '{{ gitlab_container_ports }}'
+  network_mode: host
   hostname: '{{ gitlab_container_hostname }}'
   volumes:
     - '{{ gitlab_dir }}/config:/etc/gitlab'
