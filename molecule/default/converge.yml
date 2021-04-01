@@ -1,7 +1,13 @@
 ---
 - name: Converge
-  hosts: localhost
+  hosts: gitlab
+  vars:
+    ansible_become: true
   tasks:
+    - name: Install docker-py
+      pip:
+        name: docker
+
     - name: Create network
       docker_network:
         name: test_gitlab
