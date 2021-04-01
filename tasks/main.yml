@@ -38,7 +38,7 @@
 - name: Wait for Gitlab to start
   register: health_check_result
   shell: >-
-    docker exec {{ gitlab_container_name }}
+    docker exec {{ gitlab_container.name }}
     bash -c 'curl --fail localhost/-/readiness?all=1'
   retries: 180
   delay: 1
